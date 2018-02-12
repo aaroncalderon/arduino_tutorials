@@ -5,39 +5,38 @@
 #include <Servo.h>//Using servo library to control ESC
 Servo esc; //Creating a servo class with name as esc
 
-#include <LiquidCrystal.h>   // call from Arduino LiquidCrysta library  
+// I am using this to display some of the values on a LCD display
+#include <LiquidCrystal.h>   // call from Arduino LiquidCrysta library 
 LiquidCrystal lcd(12, 11, 10, 9, 8, 7);// select pin
 
 int xpotPin = A0;  // select analog pin 0 as “input pin” for X signal
 int ypotPin = A1;  // select analog pin 1 as “input” pin for Y signal
-int bpotPin = 6;  // select analog pin 1 as “input” pin for Button signal
+int bpotPin = 6;   // select analog pin 1 as “input” pin for Button signal
 
 // parameters for reading the joystick:
 int range = 200;               // output range of X or Y movement
 int threshold = range / 50;    // resting threshold
 int center = range / 2;        // resting position value
 
-int rangeT = 200;              // output range throttle
-int thresholdT = rangeT / 100;  // resting threshold
-int centerT = 0;               // resting position value `range / int`
+int rangeT = 200;               / output range throttle
+int thresholdT = rangeT / 100; // resting threshold
+int centerT = 0;               // resting position is `zero`. this gives you a value `0 - n`
 
 // Ultrasonic Distance
 int inputPin = 4; // define ultrasonic signal receiver pin ECHO to D4
 int outputPin = 5; // define ultrasonic signal transmitter pin TRIG to D5
 
-
 //
 // process code without delay
 // https://www.arduino.cc/en/tutorial/BlinkWithoutDelay
-unsigned long previousMillis = 0;        // will store last time LED was updated
+unsigned long previousMillis = 0;     // will store last time LED was updated
 
 // constants won't change:
-const long interval = 1000;           // interval at which to blink (milliseconds)
+const long interval = 1000;           // interval at which to process code
 // without delay
 
 void setup()
 {
-
   pinMode(xpotPin, INPUT); //
   pinMode(ypotPin, INPUT); //
   pinMode(bpotPin, INPUT_PULLUP ); //
@@ -50,7 +49,7 @@ void setup()
   pinMode(outputPin, OUTPUT);
 
   // ESC
-  Serial.write("Wait for it... ");
+  Serial.println("Wait for it... ");
   esc.attach(3); //Specify the esc signal pin,Here as D3
   // this sectin will most likelly change once I test this
   // on the RC Plane.
