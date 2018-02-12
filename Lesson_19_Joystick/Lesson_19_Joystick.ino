@@ -7,15 +7,19 @@ Servo esc; //Creating a servo class with name as esc
 
 #include <LiquidCrystal.h>   // call from Arduino LiquidCrysta library  
 LiquidCrystal lcd(12, 11, 10, 9, 8, 7);// select pin
+
 int xpotPin = A0;  // select analog pin 0 as “input pin” for X signal
 int ypotPin = A1;  // select analog pin 1 as “input” pin for Y signal
 int bpotPin = 6;  // select analog pin 1 as “input” pin for Button signal
 
 // parameters for reading the joystick:
-int range = 24;               // output range of X or Y movement
-int responseDelay = 5;        // response delay of the mouse, in ms
-int threshold = range / 4;    // resting threshold
-int center = range / 2;       // resting position value
+int range = 200;               // output range of X or Y movement
+int threshold = range / 50;    // resting threshold
+int center = range / 2;        // resting position value
+
+int rangeT = 200;              // output range throttle
+int thresholdT = rangeT / 100;  // resting threshold
+int centerT = 0;               // resting position value `range / int`
 
 // Ultrasonic Distance
 int inputPin = 4; // define ultrasonic signal receiver pin ECHO to D4
@@ -78,14 +82,14 @@ void loop ()
   distance = distance / 58; // Transform pulse time to distance
   // Ultrasinic Distance END
 
-  xval = readAxis(xpotPin);   // xval variable is the value read from signal pin 0
-  yval = readAxis(ypotPin);   //yval variable is the value read from signal pin 1
+  xval = readAxis(xpotPin, rangeT, thresholdT, centerT );   // xval variable is the value read from signal pin 0
+  yval = readAxis(ypotPin, range, threshold, center);   //yval variable is the value read from signal pin 1
   bval = digitalRead (bpotPin);   //bval variable is the value read from signal pin 2
 
   // ESC
   int escVal; //Creating a variable val
 
-  escVal = map(xval, 0, 12, 1000, 2000); //mapping val to minimum and maximum(Change if needed)
+  escVal = map(xval, 0, range, 1000, 2000); //mapping val to minimum and maximum(Change if needed)
   esc.writeMicroseconds(escVal); //using val as the signal to esc
 
   // check to see if it's time to blink the LED; that is, if the difference
@@ -137,7 +141,7 @@ void loop ()
 }
 
 // from mouse control
-int readAxis(int thisAxis) {
+int readAxis(int thisAxis, int range,int threshold, int center) {
   // read the analog input:
   int reading = analogRead(thisAxis);
 
@@ -154,3 +158,4 @@ int readAxis(int thisAxis) {
   // return the distance for this axis:
   return distance;
 }
+
